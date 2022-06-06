@@ -2,9 +2,21 @@ import { useState } from 'react';
 
 function App() {
   const [players, setPlayers] = useState([]);
+  const [history, setHistory] = useState({});
   const [newPlayerName, setNewPlayerName] = useState('');
   const [scoreAdders, setScoreAdders] = useState([]);
   const [showWinners, setShowWinners] = useState(false);
+  const [showHistory, setShowHistory] = useState(false);
+  const [historyDisplayArray, setHistoryDisplayArray] = useState([]);
+  const roundDescriptor = [
+    '2 Sets',
+    '1 Run & 1 Set',
+    '2 Runs',
+    '3 Sets',
+    '2 Sets & 1 Run',
+    '1 Set & 2 Runs',
+    '3 Runs',
+  ];
 
   const addPlayer = (e) => {
     e.preventDefault();
@@ -27,15 +39,18 @@ function App() {
     var tempScoreAdders = scoreAdders.slice();
     tempPlayers[i].score =
       parseInt(tempPlayers[i].score) + parseInt(scoreAdders[i]);
+    if (!history.hasOwnProperty(i)) history[i] = [];
+    history[i].push(scoreAdders[i]);
     tempScoreAdders[i] = '';
     setPlayers(tempPlayers);
     setScoreAdders(tempScoreAdders);
   };
 
-  const resetPlayerPoints = () => {
+  const reset = () => {
     var tempPlayers = players.slice();
     for (let x in tempPlayers) tempPlayers[x].score = 0;
     setPlayers(tempPlayers);
+    setHistory({});
   };
 
   const onScoreAdderChange = (e, i) => {
@@ -48,6 +63,23 @@ function App() {
     var tempPlayers = players.slice();
     tempPlayers.sort((a, b) => a.score - b.score);
     setPlayers(tempPlayers);
+  };
+
+  const onShowHistory = () => {
+    let tempHistory = { ...history };
+    let display = [];
+    let roundCount = tempHistory[0].length;
+
+    for (let i = 0; i < roundCount; i++) {
+      display[i] = [];
+      console.log(display);
+      for (let j = 0; j < players.length; j++) {
+        if (!history.hasOwnProperty(j)) display[i].push(0);
+        else if (history[j].length <= j) display[i].push(0);
+        else display[i].push(history[j][i]);
+      }
+    }
+    setHistoryDisplayArray(display);
   };
 
   return (
@@ -91,10 +123,10 @@ function App() {
               </div>
               <div className='card w-full bg-neutral shadow-xl flex mt-4'>
                 <div className='card-body'>
-                  <h2 className='card-title'>Reset Scores</h2>
+                  <h2 className='card-title'>Reset Game</h2>
                   <button
                     className='btn btn-success btn-outline mt-3'
-                    onClick={resetPlayerPoints}
+                    onClick={reset}
                   >
                     Reset
                   </button>
@@ -111,6 +143,20 @@ function App() {
                     }}
                   >
                     Find
+                  </button>
+                </div>
+              </div>
+              <div className='card w-full bg-neutral shadow-xl flex mt-4'>
+                <div className='card-body'>
+                  <h2 className='card-title'>Show Game History</h2>
+                  <button
+                    className='btn btn-success btn-outline mt-3'
+                    onClick={() => {
+                      onShowHistory();
+                      setShowHistory((last) => !last);
+                    }}
+                  >
+                    Show
                   </button>
                 </div>
               </div>
@@ -180,6 +226,39 @@ function App() {
               </li>
             ))}
           </ul>
+        </div>
+      </div>
+      <div className={`modal ${showHistory ? 'modal-open' : ''}`}>
+        <div className='modal-box relative'>
+          <label
+            className='btn btn-sm btn-circle absolute right-2 top-2'
+            onClick={() => setShowHistory((last) => !last)}
+          >
+            ✕
+          </label>
+          <h3 className='text-lg font-bold'>Game History</h3>
+          <table className='table w-full shadow-xl mt-3'>
+            <thead>
+              <tr>
+                <th>Round</th>
+                {players.map((player, index) => (
+                  <th>{player.name}</th>
+                ))}
+                <th>Descriptor</th>
+              </tr>
+            </thead>
+            <tbody>
+              {historyDisplayArray.map((round, index) => (
+                <tr key={index}>
+                  <th>{index + 1}</th>
+                  {round.map((score, index) => (
+                    <td>{score}</td>
+                  ))}
+                  {roundDescriptor[index] && <th>{roundDescriptor[index]}</th>}
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
       </div>
     </>
