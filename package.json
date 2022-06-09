@@ -1,7 +1,13 @@
 {
   "name": "rummy-counter",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "private": true,
+  "author": "Kevin Willoughby <kevinwilloughby@protonmail.com> (https://kvnw.dev/)",
+  "main": "/src/App.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kvnwdev/RummyScoreApp.git"
+  },
   "dependencies": {
     "@testing-library/jest-dom": "^5.16.4",
     "@testing-library/react": "^13.3.0",

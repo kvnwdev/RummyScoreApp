@@ -163,7 +163,7 @@ function App() {
             </div>
             <div className='lg:col-span-6 block'>
               <h4 className='text-lg font-semibold text-center mb-4'>
-                Game Actions
+                Game Information
               </h4>
               <div className='card w-full bg-neutral shadow-xl flex'>
                 <table className='table w-full'>
@@ -261,6 +261,11 @@ function App() {
           </table>
         </div>
       </div>
+      <footer class='footer footer-center p-4 bg-base-300 text-base-content absolute w-full bottom-0'>
+        <div>
+          <p>Copyright © 2022 - All rights reserved by Kevin Willoughby</p>
+        </div>
+      </footer>
     </>
   );
 }
